@@ -1,44 +1,81 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
 
-const App = () => {
-  const [ personState, setPersonsState ] = useState({
+class App extends Component{
+  state = {
     person: [
+      {name: 'Gunjan', age:'27', profssion: 'I am a Govt Employee'},
       {name: 'Vivek', age:'27', profssion: 'I am an Engineer'},
-      {name: 'Gunjan', age:'27', profssion: 'I am an Govt Employee'},
+      {name: 'Rajendra', age:'55', profssion: 'I am a Business man'},
+      {name: 'Krishna', age:'50', profssion: 'I am a beautisian'},
     ],
-    // otherState: "some other value",
-  });
+    otherState: "some other value",
+    isBlockVisible: false,
+    value: null,
+  };
 
-  const [ otherState, setotherState ] = useState("some other value");
-
-  console.log(personState, otherState);
-  const swithNameHandler = () => {
-    setPersonsState({
-      person: [
-        {name: 'Gunjan', age:'27', profssion: 'I am an Govt Employee'},
-        {name: 'Vivek', age:'27', profssion: 'I am an Engineer'},
-      ],
-      // because hooks doesn't update other states, we will have to dynamically
-      // otherState: personState.otherState,
-    })
+  toggleDivHandler = () => {
+    this.setState({ isBlockVisible: !this.state.isBlockVisible });
   }
 
-  return (
-    <div className="App">
-      <Person
-        name={personState.person[0].name}
-        age={personState.person[0].age}
-      >{personState.person[0].profssion}</Person>
-      <Person
-        name={personState.person[1].name}
-        age={personState.person[1].age}
-      >{personState.person[1].profssion}</Person>
-      <button onClick={swithNameHandler}>Click to change Name</button>
-    </div>
-  );
-}
+  onChage = (event) => {
+    this.setState({
+      person: [
+        {profssion: event.target.value},
+      ]
+    });
+  }
 
+  deletePersonHandler = (index) => {
+    console.log('asdfasdfasdf');
+    const person = this.state.person;
+    person.splice(index, 1);
+    this.setState({ person });
+  }
+
+  render () {
+    const style = {
+      backgroundcolor: 'white',
+      border: '1px solid blue',
+      cursor: 'pointer',
+      margin: '16px auto',
+      height: '30px',
+    };
+
+    let person = null;
+
+    if(this.state.isBlockVisible){
+      person = (
+        <div>
+          {
+            this.state.person.map((person, index) => {
+              return (
+                <Person
+                  key={index}
+                  name={person.name}
+                  age={person.age}
+                  change={() => this.onChage()}
+                  onClick={() => this.deletePersonHandler(index)}
+                >{person.profssion}
+              </Person>
+              );
+            })
+          }
+        </div>
+      );
+    }
+  
+    return (
+      <div className="App">
+        {person}
+        <button
+            style={style}
+            onClick={this.toggleDivHandler}>
+            Click to show and hide Data
+          </button>
+      </div>
+    );
+  }
+}
 export default App;
